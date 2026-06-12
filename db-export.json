@@ -1,0 +1,113 @@
+{
+  "exported_at": "2026-06-12",
+  "project_id": "vlocnfzftyqydjeqhwfz",
+  "networks": [
+    { "id": 1, "name": "MTN", "logo": null },
+    { "id": 3, "name": "AirtelTigo", "logo": null },
+    { "id": 4, "name": "GMoney", "logo": null },
+    { "id": 2, "name": "Telecel", "logo": null }
+  ],
+  "agents": [
+    {
+      "id": "07052531-705f-4259-b57d-d28ad859f107",
+      "name": "Test",
+      "attendant": "test",
+      "logo": null,
+      "banner": null,
+      "created_at": "2026-06-12T14:32:19.896111+00:00",
+      "updated_at": "2026-06-12T14:32:19.896111+00:00",
+      "created_by": null
+    }
+  ],
+  "agent_locations": [
+    {
+      "id": "b2e11829-d0a4-471a-b368-5b956c4f5132",
+      "agent_id": "07052531-705f-4259-b57d-d28ad859f107",
+      "lat": 5.59977745605627,
+      "lon": -0.18373188371799,
+      "address": "18 Ghana Airways Ave, Accra, Ghana",
+      "city": "Accra",
+      "country": "Ghana",
+      "created_at": "2026-06-12T14:32:20.271735+00:00",
+      "plus_code": null,
+      "street_name": "Ghana Airways Avenue",
+      "town": "Ayawaso",
+      "post_code": null,
+      "administrative_area_level_1": "Greater Accra Region",
+      "administrative_area_level_2": "Ayawaso East Municipal"
+    }
+  ],
+  "agent_networks": [
+    {
+      "id": 1,
+      "agent_id": "07052531-705f-4259-b57d-d28ad859f107",
+      "network_id": 1,
+      "merchant_code": null
+    },
+    {
+      "id": 2,
+      "agent_id": "07052531-705f-4259-b57d-d28ad859f107",
+      "network_id": 2,
+      "merchant_code": "765887"
+    },
+    {
+      "id": 3,
+      "agent_id": "07052531-705f-4259-b57d-d28ad859f107",
+      "network_id": 3,
+      "merchant_code": "033211"
+    }
+  ],
+  "operational_hours": [
+    {
+      "id": 1,
+      "agent_id": "07052531-705f-4259-b57d-d28ad859f107",
+      "working_day": "Monday",
+      "opens_at": "08:00:00",
+      "closes_at": "17:00:00"
+    },
+    {
+      "id": 2,
+      "agent_id": "07052531-705f-4259-b57d-d28ad859f107",
+      "working_day": "Tuesday",
+      "opens_at": "08:00:00",
+      "closes_at": "17:00:00"
+    },
+    {
+      "id": 3,
+      "agent_id": "07052531-705f-4259-b57d-d28ad859f107",
+      "working_day": "Wednesday",
+      "opens_at": "08:00:00",
+      "closes_at": "17:00:00"
+    },
+    {
+      "id": 4,
+      "agent_id": "07052531-705f-4259-b57d-d28ad859f107",
+      "working_day": "Thursday",
+      "opens_at": "08:00:00",
+      "closes_at": "17:00:00"
+    },
+    {
+      "id": 5,
+      "agent_id": "07052531-705f-4259-b57d-d28ad859f107",
+      "working_day": "Friday",
+      "opens_at": "08:00:00",
+      "closes_at": "17:00:00"
+    }
+  ],
+  "agent_images": [
+    {
+      "id": "0010f83f-6f82-46e4-8921-7c4ae2e9f019",
+      "agent_id": "07052531-705f-4259-b57d-d28ad859f107",
+      "storage_path": "07052531-705f-4259-b57d-d28ad859f107/2b8b0361-2494-48d5-b6a7-02a6ed4ab981.jpg",
+      "public_url": "https://vlocnfzftyqydjeqhwfz.supabase.co/storage/v1/object/public/agent-images/07052531-705f-4259-b57d-d28ad859f107/2b8b0361-2494-48d5-b6a7-02a6ed4ab981.jpg",
+      "created_at": "2026-06-12T14:32:25.015854+00:00"
+    },
+    {
+      "id": "04d9e91d-c1a5-464c-92fc-ee703d1a4810",
+      "agent_id": "07052531-705f-4259-b57d-d28ad859f107",
+      "storage_path": "07052531-705f-4259-b57d-d28ad859f107/bba19319-d3cd-4067-87ee-87df008df13c.jpg",
+      "public_url": "https://vlocnfzftyqydjeqhwfz.supabase.co/storage/v1/object/public/agent-images/07052531-705f-4259-b57d-d28ad859f107/bba19319-d3cd-4067-87ee-87df008df13c.jpg",
+      "created_at": "2026-06-12T14:32:25.015854+00:00"
+    }
+  ]
+}

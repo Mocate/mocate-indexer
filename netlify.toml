@@ -1,0 +1,10 @@
+[build.environment]
+  NUXT_PUBLIC_SUPABASE_URL = ""
+  NUXT_PUBLIC_SUPABASE_KEY = ""
+  NUXT_PUBLIC_MAPBOX_TOKEN = ""
+
+[context.main]
+  [context.main.environment]
+
+[context.deploy-preview]
+  [context.deploy-preview.environment]
