@@ -71,7 +71,7 @@
                     {{ location.address || '—'
                     }}<span v-if="location.city">, {{ location.city }}</span>
                   </p>
-                  <GoogleMap
+                  <MapGoogleMap
                     :center="mapCenter"
                     :markers="mapMarkers"
                     :draggable="false"

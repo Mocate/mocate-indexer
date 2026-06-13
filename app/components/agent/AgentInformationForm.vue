@@ -1,113 +1,99 @@
 <template>
-  <UCard>
-    <template #header>
-      <div>
-        <h2 class="text-lg font-semibold text-highlighted">
-          Agent Information
-        </h2>
-        <p class="text-sm text-muted mt-1">
-          Basic details about the mobile money agent.
-        </p>
+  <UForm :schema="schema" :state="formState" class="space-y-7">
+    <!-- Agent Name & Attendant -->
+    <UFormField label="Agent name" name="name" required>
+      <UInput
+        v-model="formState.name"
+        placeholder="e.g. Kofi Mobile Money"
+        class="w-full"
+      />
+    </UFormField>
+    <UFormField label="Attendant" name="attendant">
+      <UInput
+        v-model="formState.attendant"
+        placeholder="Person on duty (optional)"
+        class="w-full"
+      />
+    </UFormField>
+
+    <!-- Networks -->
+    <div class="space-y-3">
+      <h3 class="text-sm font-medium text-default">Networks</h3>
+      <AgentNetworkRow
+        v-for="(row, index) in networkRows"
+        :key="index"
+        :model-value="row"
+        :networks="networks"
+        :used-network-ids="usedNetworkIds"
+        @update:model-value="(value) => updateNetworkRow(index, value)"
+        @remove="removeNetworkRow(index)"
+      />
+      <UButton
+        label="Add network"
+        icon="i-lucide-plus"
+        size="xs"
+        variant="soft"
+        class="ml-auto"
+        @click="addNetworkRow"
+      />
+    </div>
+
+    <!-- Location -->
+    <div class="space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-medium text-default">Location</h3>
+        <UButton
+          label="Detect my location"
+          icon="i-lucide-locate-fixed"
+          size="xs"
+          variant="soft"
+          :loading="geoLoading || geocodingLoading"
+          @click="detectLocation"
+        />
       </div>
-    </template>
 
-    <UForm :schema="schema" :state="formState" class="space-y-6">
-      <!-- Agent Name & Attendant -->
-      <UFormField label="Agent name" name="name" required>
-        <UInput
-          v-model="formState.name"
-          placeholder="e.g. Kofi Mobile Money"
-          class="w-full"
-        />
-      </UFormField>
-      <UFormField label="Attendant" name="attendant">
-        <UInput
-          v-model="formState.attendant"
-          placeholder="Person on duty (optional)"
-          class="w-full"
-        />
-      </UFormField>
+      <p v-if="geoError" class="text-xs text-error">{{ geoError }}</p>
 
-      <!-- Networks -->
-      <div class="space-y-3">
-        <div class="flex items-center justify-between">
-          <h3 class="text-sm font-medium text-default">Networks</h3>
-          <UButton
-            label="Add network"
-            icon="i-lucide-plus"
-            size="xs"
-            variant="soft"
-            @click="addNetworkRow"
-          />
-        </div>
-        <AgentNetworkRow
-          v-for="(row, index) in networkRows"
-          :key="index"
-          :model-value="row"
-          :networks="networks"
-          :used-network-ids="usedNetworkIds"
-          @update:model-value="(value) => updateNetworkRow(index, value)"
-          @remove="removeNetworkRow(index)"
-        />
-      </div>
+      <MapGoogleMap
+        :center="mapCenter"
+        :marker-position="{ lat: locationData.lat, lon: locationData.lon }"
+        draggable
+        class="h-64 w-full"
+        @dragend="onMarkerDragEnd"
+      />
 
-      <!-- Location -->
-      <div class="space-y-3">
-        <div class="flex items-center justify-between">
-          <h3 class="text-sm font-medium text-default">Location</h3>
-          <UButton
-            label="Detect my location"
-            icon="i-lucide-locate-fixed"
-            size="xs"
-            variant="soft"
-            :loading="geoLoading || geocodingLoading"
-            @click="detectLocation"
-          />
-        </div>
-
-        <p v-if="geoError" class="text-xs text-error">{{ geoError }}</p>
-
-        <GoogleMap
-          :center="mapCenter"
-          :marker-position="{ lat: locationData.lat, lon: locationData.lon }"
-          draggable
-          class="h-64 w-full"
-          @dragend="onMarkerDragEnd"
-        />
-
-        <!-- Geocoded address (read-only) -->
+      <!-- Geocoded address (read-only) -->
+      <div
+        v-if="locationData.address || geocodingLoading"
+        class="rounded-(--ui-radius) bg-muted p-3 space-y-1"
+      >
         <div
-          v-if="locationData.address || geocodingLoading"
-          class="rounded-(--ui-radius) bg-muted p-3 space-y-1"
+          v-if="geocodingLoading"
+          class="flex items-center gap-2 text-sm text-muted"
         >
-          <div
-            v-if="geocodingLoading"
-            class="flex items-center gap-2 text-sm text-muted"
-          >
-            <UIcon name="i-lucide-loader-2" class="size-4 animate-spin" />
-            <span>Resolving address...</span>
-          </div>
-          <template v-else>
-            <div class="flex items-start gap-2">
-              <UIcon
-                name="i-lucide-map-pin"
-                class="size-4 text-muted mt-0.5 shrink-0"
-              />
-              <span class="text-sm text-default">{{
-                locationData.address || 'Unknown address'
-              }}</span>
-            </div>
-            <div class="flex items-center gap-4 pl-6 text-xs text-muted">
-              <span v-if="locationData.city">{{ locationData.city }}</span>
-              <span v-if="locationData.country">
-                {{ locationData.country }}
-              </span>
-            </div>
-          </template>
+          <UIcon name="i-lucide-loader-2" class="size-4 animate-spin" />
+          <span>Resolving address...</span>
         </div>
+        <template v-else>
+          <div class="flex items-start gap-2">
+            <UIcon
+              name="i-lucide-map-pin"
+              class="size-4 text-muted mt-0.5 shrink-0"
+            />
+            <span class="text-sm text-default">{{
+              locationData.address || 'Unknown address'
+            }}</span>
+          </div>
+          <div class="flex items-center gap-4 pl-6 text-xs text-muted">
+            <span v-if="locationData.city">{{ locationData.city }}</span>
+            <span v-if="locationData.country">
+              {{ locationData.country }}
+            </span>
+          </div>
+        </template>
       </div>
-    </UForm>
-  </UCard>
+    </div>
+  </UForm>
 </template>
 
 <script setup lang="ts">

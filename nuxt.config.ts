@@ -4,6 +4,18 @@ export default defineNuxtConfig({
 
   app: {
     head: {
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        {
+          rel: 'preconnect',
+          href: 'https://fonts.gstatic.com',
+          crossorigin: '',
+        },
+        {
+          href: 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap',
+          rel: 'stylesheet',
+        },
+      ],
       script: [
         { src: '/scripts/maps.google.js' },
         {
@@ -23,13 +35,6 @@ export default defineNuxtConfig({
   devServer: {
     port: 4631,
   },
-
-  components: [
-    {
-      path: '~/components',
-      pathPrefix: false,
-    },
-  ],
 
   css: ['~/assets/css/main.css'],
 

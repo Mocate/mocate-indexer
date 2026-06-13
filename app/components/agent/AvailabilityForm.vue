@@ -1,23 +1,12 @@
 <template>
-  <UCard>
-    <template #header>
-      <div>
-        <h2 class="text-lg font-semibold text-highlighted">Availability</h2>
-        <p class="text-sm text-muted mt-1">
-          Set the agent's working days and operating hours.
-        </p>
-      </div>
-    </template>
-
-    <div class="space-y-3">
-      <AgentDaySchedule
-        v-for="(day, index) in schedule"
-        :key="day.working_day"
-        :model-value="day"
-        @update:model-value="(value) => updateDay(index, value)"
-      />
-    </div>
-  </UCard>
+  <div class="space-y-3">
+    <AgentDaySchedule
+      v-for="(day, index) in schedule"
+      :key="day.working_day"
+      :model-value="day"
+      @update:model-value="(value) => updateDay(index, value)"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">

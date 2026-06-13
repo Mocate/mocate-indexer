@@ -2,5 +2,33 @@
 @import '@nuxt/ui';
 
 @theme static {
-  --font-sans: 'Inter', sans-serif;
+  --font-sans: 'DM Sans', sans-serif;
+
+  /* Mocate brand — near-black "ink" ramp.
+     Placeholder approximation until the official brand guide/hex lands;
+     swap the values below to rebrand the whole app in one place. */
+  --color-ink-50: #f6f6f7;
+  --color-ink-100: #e7e7e9;
+  --color-ink-200: #d1d1d4;
+  --color-ink-300: #b0b0b5;
+  --color-ink-400: #85858c;
+  --color-ink-500: #2a2a2e;
+  --color-ink-600: #202023;
+  --color-ink-700: #161618;
+  --color-ink-800: #0f0f11;
+  --color-ink-900: #0a0a0b;
+  --color-ink-950: #050506;
+}
+
+/* Clean, editorial design language: crisp corners cascade to every
+   Nuxt UI component via --ui-radius. */
+:root {
+  --ui-radius: 0.5rem;
+}
+
+/* Hide native number-input spinners for a cleaner field look. */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
 }

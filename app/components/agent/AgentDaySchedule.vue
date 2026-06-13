@@ -1,8 +1,19 @@
 <template>
-  <div class="flex flex-col gap-3 rounded-lg border border-default p-4">
-    <UCheckbox v-model="isWorking" :label="schedule.working_day" />
+  <div
+    class="rounded-(--ui-radius) border p-4 transition-colors"
+    :class="isWorking ? 'border-default bg-elevated/40' : 'border-default'"
+  >
+    <div class="flex items-center justify-between gap-3">
+      <span
+        class="text-sm font-medium"
+        :class="isWorking ? 'text-highlighted' : 'text-muted'"
+      >
+        {{ schedule.working_day }}
+      </span>
+      <USwitch v-model="isWorking" :label="isWorking ? 'Open' : 'Closed'" />
+    </div>
 
-    <div v-if="isWorking" class="grid grid-cols-2 gap-3 pl-7">
+    <div v-if="isWorking" class="mt-4 grid grid-cols-2 gap-3">
       <UFormField
         label="Opens at"
         :name="`schedule.${schedule.working_day}.opens_at`"

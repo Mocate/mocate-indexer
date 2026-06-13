@@ -1,105 +1,155 @@
 <template>
-  <div class="min-h-screen bg-default">
-    <div class="mx-auto max-w-2xl px-4 py-8 sm:py-12">
-      <!-- Page Header -->
-      <div class="mb-8">
-        <h1 class="text-2xl font-bold text-highlighted">Index an Agent</h1>
-        <p class="text-sm text-muted mt-1">
-          Register a mobile money agent to the Mocate directory.
+  <div class="min-h-screen bg-muted/30">
+    <div
+      class="mx-auto flex min-h-screen max-w-2xl flex-col px-4 pb-28 pt-6 sm:px-6 sm:pb-12 sm:pt-12"
+    >
+      <!-- Brand / page header -->
+      <header class="mb-8">
+        <UiBrandMark />
+      </header>
+
+      <!-- Success state -->
+      <div
+        v-if="submitted"
+        class="flex flex-1 flex-col items-center justify-center py-12 text-center"
+      >
+        <div
+          class="flex size-14 items-center justify-center rounded-full bg-success/10"
+        >
+          <UIcon name="i-lucide-check" class="size-7 text-success" />
+        </div>
+        <h1 class="mt-5 text-2xl font-bold tracking-tight text-highlighted">
+          Agent indexed
+        </h1>
+        <p class="mt-2 max-w-sm text-sm text-muted">
+          <span class="font-medium text-default">{{ submittedName }}</span>
+          has been added to the Mocate directory. Thank you for indexing.
         </p>
+        <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+          <UButton
+            label="Index another agent"
+            icon="i-lucide-plus"
+            @click="startAnother"
+          />
+          <UButton
+            label="View agents"
+            color="neutral"
+            variant="ghost"
+            trailing-icon="i-lucide-arrow-right"
+            to="/agents"
+          />
+        </div>
       </div>
 
-      <!-- Stepper -->
-      <UStepper
-        ref="stepperRef"
-        v-model="currentStep"
-        :items="steps"
-        color="primary"
-        size="sm"
-        class="mb-8"
-        linear
-      >
-        <template #content="{ item }">
-          <div class="mt-6">
-            <!-- Step 1: Agent Information -->
-            <AgentInformationForm
-              v-if="item.value === 'info'"
-              ref="stepRef"
-              v-model="agentInfo"
-              :networks="networks"
+      <!-- Form flow -->
+      <template v-else>
+        <div class="mb-7">
+          <h1 class="text-2xl font-bold tracking-tight text-highlighted">
+            Index an agent
+          </h1>
+          <p class="mt-1 text-sm text-muted">
+            Register a mobile money agent to the Mocate directory.
+          </p>
+        </div>
+
+        <UiStepProgress
+          :steps="steps"
+          :current="currentStepIndex"
+          class="mb-8"
+          @select="goToStep"
+        />
+
+        <!-- Active step heading + body -->
+        <div class="flex-1">
+          <div class="mb-5">
+            <h2 class="text-lg font-semibold text-highlighted">
+              {{ activeStep.title }}
+            </h2>
+            <p class="mt-0.5 text-sm text-muted">
+              {{ activeStep.description }}
+            </p>
+          </div>
+
+          <AgentInformationForm
+            v-if="activeStep.value === 'info'"
+            ref="stepRef"
+            v-model="agentInfo"
+            :networks="networks"
+          />
+          <AgentAvailabilityForm
+            v-else-if="activeStep.value === 'availability'"
+            ref="stepRef"
+            v-model="schedule"
+          />
+          <AgentVisibilityForm
+            v-else-if="activeStep.value === 'visibility'"
+            ref="stepRef"
+            v-model="visibility"
+          />
+        </div>
+
+        <!-- Navigation: inline on desktop, sticky bottom bar on mobile -->
+        <div
+          class="fixed inset-x-0 bottom-0 z-10 border-t border-default bg-default/90 px-4 py-3 backdrop-blur sm:static sm:mt-10 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none"
+        >
+          <div
+            class="mx-auto flex max-w-2xl items-center justify-between gap-3"
+          >
+            <UButton
+              label="Back"
+              color="neutral"
+              variant="ghost"
+              icon="i-lucide-arrow-left"
+              :disabled="currentStepIndex === 0"
+              @click="goPrev"
             />
 
-            <!-- Step 2: Availability -->
-            <AvailabilityForm
-              v-if="item.value === 'availability'"
-              ref="stepRef"
-              v-model="schedule"
+            <UButton
+              v-if="!isLastStep"
+              label="Continue"
+              trailing-icon="i-lucide-arrow-right"
+              @click="goNext"
             />
-
-            <!-- Step 3: Visibility -->
-            <VisibilityForm
-              v-if="item.value === 'visibility'"
-              ref="stepRef"
-              v-model="visibility"
+            <UButton
+              v-else
+              label="Submit agent"
+              icon="i-lucide-check"
+              :loading="submitting"
+              @click="handleSubmit"
             />
           </div>
-        </template>
-      </UStepper>
-
-      <!-- Navigation Buttons -->
-      <div class="mt-8 flex items-center justify-between">
-        <UButton
-          label="Back"
-          color="neutral"
-          variant="ghost"
-          icon="i-lucide-arrow-left"
-          :disabled="currentStep === steps.at(0)?.value"
-          @click="goPrev"
-        />
-
-        <UButton
-          v-if="currentStep !== steps.at(-1)?.value"
-          label="Continue"
-          trailing-icon="i-lucide-arrow-right"
-          @click="goNext"
-        />
-        <UButton
-          v-else
-          label="Submit agent"
-          icon="i-lucide-check"
-          :loading="submitting"
-          @click="handleSubmit"
-        />
-      </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { StepperProps } from '@nuxt/ui'
 import { v4 } from 'uuid'
 
 import type { AgentInformationData } from '~/components/agent/AgentInformationForm.vue'
 import type { DayScheduleEntry } from '~/components/agent/AvailabilityForm.vue'
 import type { VisibilityData } from '~/components/agent/VisibilityForm.vue'
+import type { StepItem } from '~/components/ui/StepProgress.vue'
 
-const steps: StepperProps['items'] = [
+interface FormStep extends StepItem {
+  description: string
+}
+
+const steps: FormStep[] = [
   {
-    title: 'Agent Information',
-    description: 'Basic details & location',
-    icon: 'i-lucide-user',
+    title: 'Agent information',
+    description: 'Basic details & location of the agent.',
     value: 'info',
   },
   {
     title: 'Availability',
-    description: 'Working days & hours',
-    icon: 'i-lucide-clock',
+    description: "The agent's working days and operating hours.",
     value: 'availability',
   },
   {
     title: 'Visibility',
-    description: 'Images & branding',
-    icon: 'i-lucide-image',
+    description: 'Images that help customers recognise the agent.',
     value: 'visibility',
   },
 ]
@@ -128,15 +178,13 @@ onMounted(async () => {
 })
 
 // Stepper state
-const currentStep = ref<string | number>('info')
+const currentStepIndex = ref(0)
 const submitting = ref(false)
+const submitted = ref(false)
+const submittedName = ref('')
 
-const stepperRef = useTemplateRef<{
-  next: () => void
-  prev: () => void
-  hasNext: boolean
-  hasPrev: boolean
-}>('stepperRef')
+const activeStep = computed(() => steps[currentStepIndex.value]!)
+const isLastStep = computed(() => currentStepIndex.value === steps.length - 1)
 
 // Step 1 data
 const agentInfo = ref<AgentInformationData>({
@@ -162,13 +210,12 @@ const visibility = ref<VisibilityData>({
   imageFiles: [],
 })
 
-// Step form refs
+// Active step form ref (only one step is mounted at a time)
 const stepRef = useTemplateRef<{ validate: () => boolean | Promise<boolean> }>(
   'stepRef',
 )
 
 async function validateCurrentStep(): Promise<boolean> {
-  console.log(currentStep.value, stepRef.value)
   return stepRef.value?.validate() ?? Promise.resolve(false)
 }
 
@@ -182,15 +229,25 @@ async function goNext() {
     })
     return
   }
-  stepperRef.value?.next()
+  if (currentStepIndex.value < steps.length - 1) {
+    currentStepIndex.value++
+  }
 }
 
 function goPrev() {
-  stepperRef.value?.prev()
+  if (currentStepIndex.value > 0) {
+    currentStepIndex.value--
+  }
+}
+
+// Jump back to an already-completed step from the progress indicator.
+function goToStep(index: number) {
+  if (index < currentStepIndex.value) {
+    currentStepIndex.value = index
+  }
 }
 
 async function handleSubmit() {
-  console.log('will submit')
   const valid = await validateCurrentStep()
   if (!valid) {
     toast.add({
@@ -254,13 +311,8 @@ async function handleSubmit() {
       imagePaths,
     })
 
-    toast.add({
-      title: 'Agent indexed successfully!',
-      description: `${agentInfo.value.name} has been added to the directory.`,
-      color: 'success',
-      icon: 'i-lucide-check-circle',
-    })
-
+    submittedName.value = agentInfo.value.name
+    submitted.value = true
     resetForm()
   } catch (error) {
     toast.add({
@@ -290,12 +342,17 @@ function resetForm() {
       country: 'Ghana',
     },
   }
-  currentStep.value = steps.at(0)?.value || 'info'
+  currentStepIndex.value = 0
   schedule.value = []
   visibility.value = {
     bannerFile: null,
     logoFile: null,
     imageFiles: [],
   }
+}
+
+function startAnother() {
+  submitted.value = false
+  submittedName.value = ''
 }
 </script>

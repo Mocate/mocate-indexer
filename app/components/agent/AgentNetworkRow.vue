@@ -1,23 +1,19 @@
 <template>
-  <div class="flex items-start gap-3">
-    <div class="flex-1 min-w-0">
-      <USelect
-        v-model="selectedNetworkId"
-        :items="networkItems"
-        placeholder="Select network"
-        value-key="value"
-        class="w-full"
-      />
-    </div>
+  <div class="grid grid-cols-[1fr_1fr_auto] items-center gap-2">
+    <USelect
+      v-model="selectedNetworkId"
+      :items="networkItems"
+      placeholder="Select network"
+      value-key="value"
+      class="w-full"
+    />
 
-    <div class="flex-1 min-w-0">
-      <UInput
-        v-model="merchantCode"
-        placeholder="Merchant code (optional)"
-        inputmode="numeric"
-        class="w-full"
-      />
-    </div>
+    <UInput
+      v-model="merchantCode"
+      placeholder="Merchant code (optional)"
+      inputmode="numeric"
+      class="grow"
+    />
 
     <UButton
       icon="i-lucide-trash-2"

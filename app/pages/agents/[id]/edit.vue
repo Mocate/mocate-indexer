@@ -42,7 +42,7 @@
         <!-- Location -->
         <div class="space-y-3">
           <h2 class="text-base font-semibold text-highlighted">Location</h2>
-          <GoogleMap
+          <MapGoogleMap
             :center="{ lat: locationState.lat, lon: locationState.lon }"
             :marker-position="{
               lat: locationState.lat,

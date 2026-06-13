@@ -2,14 +2,8 @@
   <UDashboardGroup>
     <UDashboardSidebar collapsible>
       <template #header="{ collapsed }">
-        <div
-          class="flex items-center gap-2 p-2"
-          :class="collapsed ? 'justify-center' : ''"
-        >
-          <UIcon name="i-lucide-map-pin" class="size-6 text-primary" />
-          <span v-if="!collapsed" class="text-lg font-semibold text-default">
-            Mocate
-          </span>
+        <div class="p-2" :class="collapsed ? 'flex justify-center' : ''">
+          <UiBrandMark :wordmark="!collapsed" size="size-8" />
         </div>
       </template>
 
